@@ -1,59 +1,105 @@
 ---
-import Layout from '../layouts/Layout.astro';
+import RangeSlider from "../components/RangeSlider";
+import Form from "../components/Form";
+import Layout from "../layouts/Layout.astro";
+import { parsePlanetForm } from '~utils';
+
+if (
+  Astro.request.method === "POST" 
+) {
+	let form: FormData;
+	try {
+		form = await Astro.request.formData();
+	} catch {
+		return new Response('Post request should be form data.', {
+			status: 400,
+		})
+	}
+
+	let parsedForm: Record<string, any>;
+	try {
+		parsedForm = parsePlanetForm(form);
+	} catch (e) {
+		return new Response(JSON.stringify(e), {
+			status: 400,
+		})
+	}
+	return new Response(JSON.stringify(parsedForm), {
+		headers: {
+      'Content-Type': 'application/json',
+    },
+	})
+}
 ---
 
 <Layout title="Welcome to Astro.">
-	<form name="plaent">
-		<label for="planet__name">Planet</label>
-		<input type="text" name="name" id="planet__name" />
-		<label for="planet__rating">
-			Rating on scale of 1-10
-		</label>
-		<input type="range" name="rating" id="planet__rating" min="1" max="10" />
-	</form>
+  <main>
+    <h1>PlanetScale</h1>
+    <Form client:idle>
+      <label for="planet__name">Planet</label>
+      <input required type="text" name="name" id="planet__name" />
+      <label for="planet__rating"> Rating on scale of 1-10</label>
+      <RangeSlider required client:idle name="rating" id="planet__rating" />
+      <button type="submit">Lift off!</button>
+    </Form>
+  </main>
 </Layout>
 
 <style>
-	main {
-		margin: auto;
-		padding: 1.5rem;
-		max-width: 60ch;
-	}
-	h1 {
-		font-size: 3rem;
-		font-weight: 800;
-		margin: 0;
-	}
-	.text-gradient {
-		background-image: var(--accent-gradient);
-		-webkit-background-clip: text;
-		-webkit-text-fill-color: transparent;
-		background-size: 400%;
-		background-position: 0%;
-	}
-	.instructions {
-		line-height: 1.6;
-		margin: 1rem 0;
-		border: 1px solid rgba(var(--accent), 25%);
-		background-color: white;
-		padding: 1rem;
-		border-radius: 0.4rem;
-	}
-	.instructions code {
-		font-size: 0.875em;
-		font-weight: bold;
-		background: rgba(var(--accent), 12%);
-		color: rgb(var(--accent));
-		border-radius: 4px;
-		padding: 0.3em 0.45em;
-	}
-	.instructions strong {
-		color: rgb(var(--accent));
-	}
-	.link-card-grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(24ch, 1fr));
-		gap: 1rem;
-		padding: 0;
-	}
+  main {
+    max-width: 50ch;
+    margin: auto;
+  }
+
+  form {
+    display: grid;
+    gap: 1rem;
+  }
+
+  form :global(input) {
+    display: block;
+  }
+
+  main {
+    margin: auto;
+    padding: 1.5rem;
+    max-width: 60ch;
+  }
+  h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    margin: 0;
+  }
+  .text-gradient {
+    background-image: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-size: 400%;
+    background-position: 0%;
+  }
+  .instructions {
+    line-height: 1.6;
+    margin: 1rem 0;
+    border: 1px solid rgba(var(--accent), 25%);
+    background-color: white;
+    padding: 1rem;
+    border-radius: 0.4rem;
+  }
+  .instructions code {
+    font-size: 0.875em;
+    font-weight: bold;
+    background: rgba(var(--accent), 12%);
+    color: rgb(var(--accent));
+    border-radius: 4px;
+    padding: 0.3em 0.45em;
+  }
+  .instructions strong {
+    color: rgb(var(--accent));
+  }
+  .link-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(24ch, 1fr));
+    gap: 1rem;
+    padding: 0;
+  }
 </style>
