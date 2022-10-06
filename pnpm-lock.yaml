@@ -4,11 +4,13 @@ specifiers:
   '@astrojs/solid-js': ^1.1.1
   astro: ^1.4.5
   solid-js: ^1.4.3
+  zod: ^3.19.1
 
 dependencies:
   '@astrojs/solid-js': 1.1.1_solid-js@1.5.7
   astro: 1.4.5
   solid-js: 1.5.7
+  zod: 3.19.1
 
 packages:
 
